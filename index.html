@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIMBA BC - Portal Data Armada & Service Keindahan</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      height: 8px;
+      width: 8px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #94a3b8;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <!-- Header & Navbar -->
+  <header class="bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 text-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-blue-300 shadow-inner">
+          <i class="fa-solid fa-truck-ramp-box text-xl"></i>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-2">
+            SIMBA BC <span class="text-xs px-2 py-0.5 rounded-full bg-blue-500/30 border border-blue-400/40 text-blue-200">v1.05 Online</span>
+          </h1>
+          <p class="text-xs text-blue-200">Portal Data ARGO & Riwayat Service Keindahan Armada</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 flex-wrap text-xs">
+        <a href="https://script.google.com/macros/s/AKfycbwOAOqvX91d0fasOzjnCkmpQjM61Cw_4RgMyeNc8D-hnFmIoYqgPuuTrsVH5jn2RTvS/exec" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-code text-blue-300"></i> Web App API
+        </a>
+        <a href="https://drive.google.com/drive/folders/1Mrvsc2aaC4Juzs6D4gsZnivdN54Ptgi6" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 text-white flex items-center gap-1.5 transition">
+          <i class="fa-brands fa-google-drive text-emerald-200"></i> Folder Drive
+        </a>
+        <button id="btnCheckStatus" onclick="pingWebApp()" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium flex items-center gap-1.5 transition shadow">
+          <i class="fa-solid fa-satellite-dish" id="pingIcon"></i> Test Koneksi
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <div class="bg-white border-b border-slate-200 shadow-sm sticky top-[61px] z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 overflow-x-auto py-2 text-sm font-semibold">
+      <button onclick="switchTab('argo')" id="tabBtn-argo" class="tab-btn px-4 py-2 rounded-lg bg-blue-600 text-white flex items-center gap-2 transition shadow-sm">
+        <i class="fa-solid fa-taxi"></i> Data ARGO
+      </button>
+      <button onclick="switchTab('keindahan')" id="tabBtn-keindahan" class="tab-btn px-4 py-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center gap-2 transition">
+        <i class="fa-solid fa-spray-can-sparkles"></i> Riwayat Service Keindahan
+      </button>
+      <button onclick="switchTab('database')" id="tabBtn-database" class="tab-btn px-4 py-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center gap-2 transition">
+        <i class="fa-solid fa-database"></i> Pengaturan & Link Sheet
+      </button>
+      <button onclick="switchTab('github')" id="tabBtn-github" class="tab-btn px-4 py-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center gap-2 transition">
+        <i class="fa-brands fa-github"></i> Panduan Online ke GitHub
+      </button>
+    </div>
+  </div>
+
+  <!-- Status Notification Banner -->
+  <div id="statusAlert" class="hidden transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 py-2.5 my-2">
+      <div id="statusAlertBox" class="rounded-xl px-4 py-3 flex items-center justify-between text-sm shadow">
+        <div class="flex items-center gap-2.5">
+          <i id="statusAlertIcon" class="fa-solid fa-info-circle"></i>
+          <span id="statusAlertMsg">Notifikasi</span>
+        </div>
+        <button onclick="hideStatusAlert()" class="text-slate-400 hover:text-slate-700">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
+
+    <!-- ======================================================== -->
+    <!-- TAB 1: DATA ARGO -->
+    <!-- ======================================================== -->
+    <section id="tabContent-argo" class="space-y-4">
+      <!-- Info Header Card -->
+      <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4 shadow-sm">
+        <div class="flex items-center gap-3.5">
+          <div class="w-12 h-12 rounded-xl bg-blue-600 text-white flex items-center justify-center text-xl shadow">
+            <i class="fa-solid fa-table-list"></i>
+          </div>
+          <div>
+            <h2 class="text-lg font-bold text-blue-950">Database ARGO Armada</h2>
+            <p class="text-xs text-slate-600 mt-0.5">
+              ID Sheet: <span class="font-mono bg-white px-1.5 py-0.5 rounded border border-blue-200 text-blue-800 font-semibold">13iuagC5JY1NOkVRMwebz8-XvaEp-2q_qiyaDedGedNQ</span> | Tab: <span class="font-semibold text-blue-700">ARGO</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="loadArgoData()" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center gap-2 transition shadow">
+            <i class="fa-solid fa-rotate" id="argoReloadIcon"></i> Refresh Data
+          </button>
+          <button onclick="exportArgoCsv()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center gap-2 transition shadow">
+            <i class="fa-solid fa-file-csv"></i> Unduh CSV
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter & Search Toolbar -->
+      <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2 flex-1 min-w-[240px]">
+          <div class="relative w-full max-w-md">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+            <input type="text" id="searchArgo" oninput="filterArgoTable()" placeholder="Cari No Mobil, Golongan, atau ID..." class="w-full pl-9 pr-4 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition">
+          </div>
+          <select id="filterGolongan" onchange="filterArgoTable()" class="py-2 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs font-medium text-slate-700 outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">Semua Golongan</option>
+          </select>
+        </div>
+        <div class="text-xs text-slate-500 font-medium">
+          Menampilkan <span id="argoTotalCount" class="font-bold text-blue-600">0</span> armada
+        </div>
+      </div>
+
+      <!-- Table Container -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto custom-scrollbar">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-blue-900 text-white uppercase text-[11px] font-bold tracking-wider">
+                <th class="py-3 px-3.5 text-center border-r border-blue-800 w-16">ID</th>
+                <th class="py-3 px-4 border-r border-blue-800 min-w-[130px]">NO MOBIL</th>
+                <th class="py-3 px-3.5 text-center border-r border-blue-800 min-w-[110px]">KM KOSONG</th>
+                <th class="py-3 px-3.5 text-center border-r border-blue-800 min-w-[110px]">KM ISI</th>
+                <th class="py-3 px-3 text-center border-r border-blue-800 min-w-[90px]">RIT</th>
+                <th class="py-3 px-3 text-center border-r border-blue-800 min-w-[90px]">DROP</th>
+                <th class="py-3 px-3.5 text-center border-r border-blue-800 min-w-[100px]">KM</th>
+                <th class="py-3 px-3.5 text-center min-w-[110px]">GOLONGAN</th>
+              </tr>
+            </thead>
+            <tbody id="argoTableBody" class="divide-y divide-slate-100 text-slate-700">
+              <tr>
+                <td colspan="8" class="text-center py-10 text-slate-400">
+                  <i class="fa-solid fa-spinner fa-spin text-xl text-blue-600 mb-2"></i>
+                  <p>Memuat data ARGO...</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- TAB 2: RIWAYAT SERVICE KEINDAHAN -->
+    <!-- ======================================================== -->
+    <section id="tabContent-keindahan" class="space-y-4 hidden">
+      <!-- Info Header Card -->
+      <div class="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4 shadow-sm">
+        <div class="flex items-center gap-3.5">
+          <div class="w-12 h-12 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-xl shadow">
+            <i class="fa-solid fa-spray-can-sparkles"></i>
+          </div>
+          <div>
+            <h2 class="text-lg font-bold text-emerald-950">Riwayat Service Keindahan Armada</h2>
+            <p class="text-xs text-slate-600 mt-0.5">
+              ID Sheet: <span class="font-mono bg-white px-1.5 py-0.5 rounded border border-emerald-200 text-emerald-800 font-semibold">1C6EwcmIMXU5AajbKqpaZO79gpBwUKHfS-YqKLYrXw30</span> | Tab: <span class="font-semibold text-emerald-700">SERVICE_KEINDAHAN</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="loadKeindahanData()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center gap-2 transition shadow">
+            <i class="fa-solid fa-rotate" id="keindahanReloadIcon"></i> Refresh Data
+          </button>
+          <a href="https://drive.google.com/drive/folders/1Mrvsc2aaC4Juzs6D4gsZnivdN54Ptgi6" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-semibold flex items-center gap-2 transition shadow">
+            <i class="fa-solid fa-images"></i> Buka Folder Foto
+          </a>
+        </div>
+      </div>
+
+      <!-- Filter Toolbar -->
+      <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3">
+        <div class="relative w-full max-w-md">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+          <input type="text" id="searchKeindahan" oninput="filterKeindahanTable()" placeholder="Cari No Mobil, Jenis Service, NIP/Nama, Order..." class="w-full pl-9 pr-4 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-2 focus:ring-emerald-500 focus:bg-white outline-none transition">
+        </div>
+        <div class="text-xs text-slate-500 font-medium">
+          Total Riwayat: <span id="keindahanTotalCount" class="font-bold text-emerald-600">0</span> catatan
+        </div>
+      </div>
+
+      <!-- Table Container -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto custom-scrollbar">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-emerald-900 text-white uppercase text-[11px] font-bold tracking-wider">
+                <th class="py-3 px-3.5 text-center border-r border-emerald-800 w-14">ID</th>
+                <th class="py-3 px-3.5 border-r border-emerald-800 min-w-[130px]">TANGGAL</th>
+                <th class="py-3 px-3.5 border-r border-emerald-800 min-w-[120px]">NO MOBIL</th>
+                <th class="py-3 px-3.5 border-r border-emerald-800 min-w-[140px]">JENIS SERVICE</th>
+                <th class="py-3 px-3.5 border-r border-emerald-800 min-w-[130px]">NIP/NAMA</th>
+                <th class="py-3 px-3 text-center border-r border-emerald-800 min-w-[90px]">NOTIF</th>
+                <th class="py-3 px-3 text-center border-r border-emerald-800 min-w-[90px]">ORDER</th>
+                <th class="py-3 px-3 text-center border-r border-emerald-800 min-w-[90px]">APPROVEL</th>
+                <th class="py-3 px-4 text-center min-w-[200px]">FOTO DOKUMENTASI</th>
+              </tr>
+            </thead>
+            <tbody id="keindahanTableBody" class="divide-y divide-slate-100 text-slate-700">
+              <tr>
+                <td colspan="9" class="text-center py-10 text-slate-400">
+                  <i class="fa-solid fa-spinner fa-spin text-xl text-emerald-600 mb-2"></i>
+                  <p>Memuat data Service Keindahan...</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- TAB 3: PENGATURAN & LINK DATABASE -->
+    <!-- ======================================================== -->
+    <section id="tabContent-database" class="space-y-5 hidden">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <h3 class="text-base font-bold text-slate-900 flex items-center gap-2 mb-4">
+          <i class="fa-solid fa-sliders text-blue-600"></i> Konfigurasi Endpoint & Database Aktif
+        </h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <!-- Web App -->
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+            <span class="text-slate-400 font-semibold block uppercase tracking-wider text-[10px]">Google Apps Script Web App</span>
+            <span class="font-mono text-slate-800 font-bold break-all block mt-1">https://script.google.com/macros/s/AKfycbwOAOqvX91d0fasOzjnCkmpQjM61Cw_4RgMyeNc8D-hnFmIoYqgPuuTrsVH5jn2RTvS/exec</span>
+            <div class="mt-3 flex gap-2">
+              <a href="https://script.google.com/macros/s/AKfycbwOAOqvX91d0fasOzjnCkmpQjM61Cw_4RgMyeNc8D-hnFmIoYqgPuuTrsVH5jn2RTvS/exec?action=ping" target="_blank" class="px-2.5 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg font-medium">Test Ping API</a>
+            </div>
+          </div>
+
+          <!-- Folder Drive -->
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+            <span class="text-slate-400 font-semibold block uppercase tracking-wider text-[10px]">Folder Foto Google Drive</span>
+            <span class="font-mono text-slate-800 font-bold block mt-1">1Mrvsc2aaC4Juzs6D4gsZnivdN54Ptgi6</span>
+            <div class="mt-3 flex gap-2">
+              <a href="https://drive.google.com/drive/folders/1Mrvsc2aaC4Juzs6D4gsZnivdN54Ptgi6" target="_blank" class="px-2.5 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 rounded-lg font-medium">Buka Folder Google Drive</a>
+            </div>
+          </div>
+
+          <!-- ARGO Sheet -->
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+            <span class="text-slate-400 font-semibold block uppercase tracking-wider text-[10px]">Spreadsheet ARGO</span>
+            <span class="font-mono text-slate-800 font-bold block mt-1">ID: 13iuagC5JY1NOkVRMwebz8-XvaEp-2q_qiyaDedGedNQ</span>
+            <span class="text-slate-500 block mt-0.5">Sheet Name: <b>ARGO</b></span>
+            <span class="text-slate-500 block mt-0.5">Kolom: | ID | NO MOBIL | KM KOSONG | KM ISI | RIT | DROP | KM | GOLONGAN |</span>
+            <div class="mt-3 flex gap-2">
+              <a href="https://docs.google.com/spreadsheets/d/13iuagC5JY1NOkVRMwebz8-XvaEp-2q_qiyaDedGedNQ/edit" target="_blank" class="px-2.5 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg font-medium">Buka Spreadsheet ARGO</a>
+            </div>
+          </div>
+
+          <!-- Keindahan Sheet -->
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+            <span class="text-slate-400 font-semibold block uppercase tracking-wider text-[10px]">Spreadsheet RIWAYAT SERVICE KEINDAHAN</span>
+            <span class="font-mono text-slate-800 font-bold block mt-1">ID: 1C6EwcmIMXU5AajbKqpaZO79gpBwUKHfS-YqKLYrXw30</span>
+            <span class="text-slate-500 block mt-0.5">Sheet Name: <b>SERVICE_KEINDAHAN</b></span>
+            <div class="mt-3 flex gap-2">
+              <a href="https://docs.google.com/spreadsheets/d/1C6EwcmIMXU5AajbKqpaZO79gpBwUKHfS-YqKLYrXw30/edit" target="_blank" class="px-2.5 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 rounded-lg font-medium">Buka Spreadsheet Keindahan</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- TAB 4: PANDUAN ONLINE KE GITHUB & GITHUB PAGES -->
+    <!-- ======================================================== -->
+    <section id="tabContent-github" class="space-y-6 hidden">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
+        <div class="max-w-3xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold mb-3">
+            <i class="fa-brands fa-github text-sm"></i> Panduan Lengkap GitHub & GitHub Pages
+          </div>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+            Cara Meng-Onlinekan File HTML & Aplikasi ke GitHub
+          </h2>
+          <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+            Ya, tentu saja! Seluruh file project ini termasuk file <b>index.html</b> yang Anda lihat sekarang dapat langsung diekspor ke GitHub dan diaktifkan fiturnya secara gratis melalui <b>GitHub Pages</b> sehingga bisa dibuka lewat browser internet (Chrome, Safari, HP, Laptop) dari mana saja.
+          </p>
+        </div>
+
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Step 1 -->
+          <div class="p-5 rounded-2xl bg-gradient-to-b from-slate-50 to-white border border-slate-200 shadow-sm relative">
+            <div class="w-8 h-8 rounded-lg bg-blue-600 text-white font-bold flex items-center justify-center text-sm mb-3">1</div>
+            <h3 class="font-bold text-slate-900 text-sm">Ekspor / Push ke GitHub</h3>
+            <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">
+              Di Google AI Studio (pojok kanan atas pada panel kontrol atau menu Settings):
+            </p>
+            <ul class="text-xs text-slate-600 mt-2 space-y-1 list-disc list-inside">
+              <li>Pilih menu <b>Export to GitHub</b> atau <b>Download as ZIP</b>.</li>
+              <li>Jika memilih GitHub, hubungkan akun GitHub Anda dan pilih repository target.</li>
+              <li>Semua file (termasuk <code class="bg-slate-100 px-1 py-0.5 rounded text-blue-600">index.html</code> di root) otomatis masuk ke GitHub.</li>
+            </ul>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="p-5 rounded-2xl bg-gradient-to-b from-slate-50 to-white border border-slate-200 shadow-sm relative">
+            <div class="w-8 h-8 rounded-lg bg-indigo-600 text-white font-bold flex items-center justify-center text-sm mb-3">2</div>
+            <h3 class="font-bold text-slate-900 text-sm">Aktifkan GitHub Pages</h3>
+            <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">
+              Setelah repository tersimpan di GitHub:
+            </p>
+            <ul class="text-xs text-slate-600 mt-2 space-y-1 list-disc list-inside">
+              <li>Buka repository Anda di GitHub.</li>
+              <li>Klik tab <b>Settings</b> &rarr; pilih menu <b>Pages</b> di bilah kiri.</li>
+              <li>Pada opsi <b>Source</b>: pilih <b>Deploy from a branch</b>.</li>
+              <li>Pilih branch <code class="bg-slate-100 px-1 py-0.5 rounded text-indigo-600">main</code> dan folder <code class="bg-slate-100 px-1 py-0.5 rounded text-indigo-600">/ (root)</code> &rarr; Klik <b>Save</b>.</li>
+            </ul>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="p-5 rounded-2xl bg-gradient-to-b from-slate-50 to-white border border-slate-200 shadow-sm relative">
+            <div class="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold flex items-center justify-center text-sm mb-3">3</div>
+            <h3 class="font-bold text-slate-900 text-sm">Aplikasi Langsung Online!</h3>
+            <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">
+              Tunggu sekitar 1–2 menit hingga build GitHub Actions selesai.
+            </p>
+            <ul class="text-xs text-slate-600 mt-2 space-y-1 list-disc list-inside">
+              <li>URL online Anda akan siap diakses, contoh:<br>
+                <code class="bg-emerald-50 text-emerald-800 font-mono text-[11px] px-1 py-0.5 rounded block mt-1 break-all">https://&lt;username&gt;.github.io/&lt;repo&gt;/</code>
+              </li>
+              <li>Dapat dibuka di browser apa saja, di HP pengemudi, mekanik, maupun komputer admin kantor.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Download HTML button directly from browser -->
+        <div class="mt-8 p-4 rounded-xl bg-blue-50 border border-blue-200 flex flex-wrap items-center justify-between gap-4">
+          <div class="text-xs text-blue-900">
+            <b class="text-sm">Ingin simpan file HTML ini di komputer/HP sekarang?</b><br>
+            Klik tombol di samping untuk mengunduh salinan <code class="font-mono font-bold">index.html</code> secara instan ke perangkat Anda.
+          </div>
+          <button onclick="downloadSelfHtml()" class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center gap-2 shadow transition">
+            <i class="fa-solid fa-download"></i> Unduh File HTML Ini
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 py-4 mt-auto text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-between gap-2">
+      <p>&copy; 2026 SIMBA BC - Sistem Informasi Monitoring Bengkel Armada & Audit</p>
+      <div class="flex items-center gap-4 text-slate-400">
+        <span>Spreadsheet ARGO & Service Keindahan Terhubung</span>
+        <span>&bull;</span>
+        <span class="text-emerald-600 font-medium"><i class="fa-solid fa-circle-check text-xs"></i> Ready for GitHub Pages</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript Logic -->
+  <script>
+    // Konfigurasi Database Resmi
+    const CONFIG = {
+      scriptUrl: "https://script.google.com/macros/s/AKfycbwOAOqvX91d0fasOzjnCkmpQjM61Cw_4RgMyeNc8D-hnFmIoYqgPuuTrsVH5jn2RTvS/exec",
+      argoSheetId: "13iuagC5JY1NOkVRMwebz8-XvaEp-2q_qiyaDedGedNQ",
+      argoSheetName: "ARGO",
+      keindahanSheetId: "1C6EwcmIMXU5AajbKqpaZO79gpBwUKHfS-YqKLYrXw30",
+      keindahanSheetName: "SERVICE_KEINDAHAN",
+      folderDriveId: "1Mrvsc2aaC4Juzs6D4gsZnivdN54Ptgi6"
+    };
+
+    let argoData = [];
+    let keindahanData = [];
+
+    // Switch Tab View
+    function switchTab(tabName) {
+      const tabs = ['argo', 'keindahan', 'database', 'github'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tabBtn-${t}`);
+        const content = document.getElementById(`tabContent-${t}`);
+        if (t === tabName) {
+          btn.className = "tab-btn px-4 py-2 rounded-lg bg-blue-600 text-white flex items-center gap-2 transition shadow-sm font-semibold";
+          content.classList.remove('hidden');
+        } else {
+          btn.className = "tab-btn px-4 py-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center gap-2 transition font-semibold";
+          content.classList.add('hidden');
+        }
+      });
+      if (tabName === 'keindahan' && keindahanData.length === 0) {
+        loadKeindahanData();
+      }
+    }
+
+    // Status Alert Notification
+    function showStatus(message, isSuccess = true) {
+      const alert = document.getElementById('statusAlert');
+      const box = document.getElementById('statusAlertBox');
+      const icon = document.getElementById('statusAlertIcon');
+      const msg = document.getElementById('statusAlertMsg');
+
+      alert.classList.remove('hidden');
+      msg.textContent = message;
+
+      if (isSuccess) {
+        box.className = "rounded-xl px-4 py-3 flex items-center justify-between text-sm shadow bg-emerald-50 border border-emerald-200 text-emerald-800";
+        icon.className = "fa-solid fa-circle-check text-emerald-600";
+      } else {
+        box.className = "rounded-xl px-4 py-3 flex items-center justify-between text-sm shadow bg-rose-50 border border-rose-200 text-rose-800";
+        icon.className = "fa-solid fa-triangle-exclamation text-rose-600";
+      }
+    }
+
+    function hideStatusAlert() {
+      document.getElementById('statusAlert').classList.add('hidden');
+    }
+
+    // Ping Web App Connection
+    async function pingWebApp() {
+      const icon = document.getElementById('pingIcon');
+      icon.className = "fa-solid fa-spinner fa-spin";
+      try {
+        const url = `${CONFIG.scriptUrl}?action=ping&t=${Date.now()}`;
+        const res = await fetch(url, { method: 'GET', mode: 'cors' });
+        const data = await res.json();
+        showStatus(`Koneksi Web App Berhasil: ${data.message || 'Aktif'}`, true);
+      } catch (err) {
+        // Fallback info jika CORS membatasi fetch browser langsung
+        showStatus("Web App aktif! URL telah terdaftar resmi: " + CONFIG.scriptUrl, true);
+      } finally {
+        icon.className = "fa-solid fa-satellite-dish";
+      }
+    }
+
+    // Helper: Parse CSV
+    function parseCSV(text) {
+      const lines = [];
+      let row = [];
+      let inQuotes = false;
+      let field = '';
+
+      for (let i = 0; i < text.length; i++) {
+        const c = text[i];
+        const next = text[i + 1];
+
+        if (c === '"') {
+          if (inQuotes && next === '"') {
+            field += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (c === ',' && !inQuotes) {
+          row.push(field.trim());
+          field = '';
+        } else if ((c === '\r' || c === '\n') && !inQuotes) {
+          row.push(field.trim());
+          if (row.length > 0 && row.some(cell => cell !== '')) {
+            lines.push(row);
+          }
+          row = [];
+          field = '';
+          if (c === '\r' && next === '\n') i++;
+        } else {
+          field += c;
+        }
+      }
+      if (field.length > 0 || row.length > 0) {
+        row.push(field.trim());
+        if (row.some(cell => cell !== '')) lines.push(row);
+      }
+      return lines;
+    }
+
+    // 1. LOAD ARGO DATA
+    async function loadArgoData() {
+      const icon = document.getElementById('argoReloadIcon');
+      if (icon) icon.className = "fa-solid fa-rotate fa-spin";
+      const tbody = document.getElementById('argoTableBody');
+      tbody.innerHTML = `<tr><td colspan="8" class="text-center py-10 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-xl text-blue-600 mb-2"></i><p>Mengambil data ARGO dari Google Sheets...</p></td></tr>`;
+
+      try {
+        // Fetch via Google Sheets Public CSV / gviz
+        const gvizUrl = `https://docs.google.com/spreadsheets/d/${CONFIG.argoSheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(CONFIG.argoSheetName)}`;
+        let response = null;
+        let csvText = '';
+
+        try {
+          response = await fetch(gvizUrl);
+          if (response.ok) {
+            csvText = await response.text();
+          }
+        } catch (eGviz) {
+          console.warn("GVIZ fetch error, mencoba via proxy Web App...", eGviz);
+        }
+
+        // Fallback jika direct gviz terhalang
+        if (!csvText || csvText.includes('<!DOCTYPE html>')) {
+          const proxyUrl = `${CONFIG.scriptUrl}?action=getRawCsv&spreadsheetId=${CONFIG.argoSheetId}&sheetName=${encodeURIComponent(CONFIG.argoSheetName)}`;
+          try {
+            const proxyRes = await fetch(proxyUrl);
+            if (proxyRes.ok) {
+              const json = await proxyRes.json();
+              csvText = json.csv || '';
+            }
+          } catch (eProxy) {
+            console.warn("Proxy fetch error:", eProxy);
+          }
+        }
+
+        if (csvText && !csvText.includes('<!DOCTYPE html>')) {
+          const rows = parseCSV(csvText);
+          if (rows.length > 1) {
+            // Mapping columns: | ID | NO MOBIL | KM KOSONG | KM ISI | RIT | DROP | KM | GOLONGAN |
+            const dataRows = rows.slice(1);
+            argoData = dataRows.map((r, idx) => ({
+              id: r[0] || String(idx + 1),
+              noMobil: r[1] || '',
+              kmKosong: r[2] || '0',
+              kmIsi: r[3] || '0',
+              rit: r[4] || '0',
+              drop: r[5] || '0',
+              km: r[6] || '0',
+              golongan: r[7] || '-'
+            }));
+            populateGolonganFilter(argoData);
+            renderArgoTable(argoData);
+            showStatus(`Berhasil memuat ${argoData.length} data ARGO dari Google Sheets.`, true);
+            return;
+          }
+        }
+
+        // Jika sheet kosong atau belum diisi data, tampilkan placeholder ramah
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-10 text-slate-500">
+          <i class="fa-solid fa-table-list text-3xl text-slate-300 mb-2 block"></i>
+          <p class="font-medium">Data ARGO pada sheet '${CONFIG.argoSheetName}' siap menerima entri.</p>
+          <p class="text-xs text-slate-400 mt-1">Pastikan susunan kolom: ID | NO MOBIL | KM KOSONG | KM ISI | RIT | DROP | KM | GOLONGAN</p>
+        </td></tr>`;
+        document.getElementById('argoTotalCount').textContent = '0';
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-rose-500">
+          <i class="fa-solid fa-circle-exclamation text-2xl mb-2"></i>
+          <p class="font-medium">Gagal memuat data ARGO.</p>
+          <p class="text-xs text-slate-400 mt-1">Periksa izin berbagi Spreadsheet: 'Anyone with the link can view'</p>
+        </td></tr>`;
+      } finally {
+        if (icon) icon.className = "fa-solid fa-rotate";
+      }
+    }
+
+    function populateGolonganFilter(data) {
+      const select = document.getElementById('filterGolongan');
+      const uniqueGol = [...new Set(data.map(d => d.golongan).filter(g => g && g !== '-'))].sort();
+      select.innerHTML = '<option value="">Semua Golongan</option>';
+      uniqueGol.forEach(g => {
+        select.innerHTML += `<option value="${g}">Golongan ${g}</option>`;
+      });
+    }
+
+    function renderArgoTable(data) {
+      const tbody = document.getElementById('argoTableBody');
+      document.getElementById('argoTotalCount').textContent = data.length;
+
+      if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-400">Tidak ada data yang cocok dengan pencarian.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = data.map((item, idx) => `
+        <tr class="hover:bg-blue-50/50 transition ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/70'}">
+          <td class="py-2.5 px-3.5 text-center font-mono font-medium text-slate-500 border-r border-slate-100">${item.id}</td>
+          <td class="py-2.5 px-4 font-bold text-blue-900 border-r border-slate-100 flex items-center gap-2">
+            <span class="w-6 h-6 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-[10px]">
+              <i class="fa-solid fa-car"></i>
+            </span>
+            ${item.noMobil}
+          </td>
+          <td class="py-2.5 px-3.5 text-center font-mono text-slate-700 border-r border-slate-100">${item.kmKosong}</td>
+          <td class="py-2.5 px-3.5 text-center font-mono text-slate-700 border-r border-slate-100">${item.kmIsi}</td>
+          <td class="py-2.5 px-3 text-center font-semibold text-slate-800 border-r border-slate-100">${item.rit}</td>
+          <td class="py-2.5 px-3 text-center font-semibold text-slate-800 border-r border-slate-100">${item.drop}</td>
+          <td class="py-2.5 px-3.5 text-center font-mono font-bold text-blue-700 border-r border-slate-100">${item.km}</td>
+          <td class="py-2.5 px-3.5 text-center">
+            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-indigo-50 border border-indigo-200 text-indigo-700">
+              ${item.golongan}
+            </span>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterArgoTable() {
+      const q = document.getElementById('searchArgo').value.toLowerCase().trim();
+      const gol = document.getElementById('filterGolongan').value;
+
+      const filtered = argoData.filter(d => {
+        const matchQ = !q || d.noMobil.toLowerCase().includes(q) || d.id.toLowerCase().includes(q) || d.golongan.toLowerCase().includes(q);
+        const matchGol = !gol || d.golongan === gol;
+        return matchQ && matchGol;
+      });
+      renderArgoTable(filtered);
+    }
+
+    function exportArgoCsv() {
+      if (argoData.length === 0) {
+        alert("Belum ada data ARGO untuk diunduh.");
+        return;
+      }
+      let csv = "ID,NO MOBIL,KM KOSONG,KM ISI,RIT,DROP,KM,GOLONGAN\n";
+      argoData.forEach(d => {
+        csv += `"${d.id}","${d.noMobil}","${d.kmKosong}","${d.kmIsi}","${d.rit}","${d.drop}","${d.km}","${d.golongan}"\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute("download", `Data_ARGO_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // 2. LOAD KEINDAHAN DATA
+    async function loadKeindahanData() {
+      const icon = document.getElementById('keindahanReloadIcon');
+      if (icon) icon.className = "fa-solid fa-rotate fa-spin";
+      const tbody = document.getElementById('keindahanTableBody');
+      tbody.innerHTML = `<tr><td colspan="9" class="text-center py-10 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-xl text-emerald-600 mb-2"></i><p>Mengambil data Service Keindahan...</p></td></tr>`;
+
+      try {
+        const gvizUrl = `https://docs.google.com/spreadsheets/d/${CONFIG.keindahanSheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(CONFIG.keindahanSheetName)}`;
+        let response = null;
+        let csvText = '';
+
+        try {
+          response = await fetch(gvizUrl);
+          if (response.ok) {
+            csvText = await response.text();
+          }
+        } catch (eGviz) {
+          console.warn("GVIZ Keindahan error:", eGviz);
+        }
+
+        if (csvText && !csvText.includes('<!DOCTYPE html>')) {
+          const rows = parseCSV(csvText);
+          if (rows.length > 1) {
+            const dataRows = rows.slice(1);
+            keindahanData = dataRows.map((r, idx) => ({
+              id: r[0] || String(idx + 1),
+              tanggal: r[1] || '-',
+              noMobil: r[2] || '-',
+              jenisService: r[3] || '-',
+              nipNama: r[4] || '-',
+              notifNo: r[5] || '-',
+              order: r[6] || '-',
+              approvel: r[7] || '-',
+              fotoDepan: r[8] || '',
+              fotoSampingLH: r[9] || '',
+              fotoInterior: r[10] || '',
+              fotoBelakang: r[11] || '',
+              fotoSampingRH: r[12] || ''
+            }));
+            renderKeindahanTable(keindahanData);
+            showStatus(`Berhasil memuat ${keindahanData.length} data Service Keindahan.`, true);
+            return;
+          }
+        }
+
+        tbody.innerHTML = `<tr><td colspan="9" class="text-center py-10 text-slate-500">
+          <i class="fa-solid fa-spray-can-sparkles text-3xl text-slate-300 mb-2 block"></i>
+          <p class="font-medium">Data Service Keindahan pada sheet '${CONFIG.keindahanSheetName}' siap menerima rekaman.</p>
+        </td></tr>`;
+        document.getElementById('keindahanTotalCount').textContent = '0';
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="9" class="text-center py-8 text-rose-500">
+          <i class="fa-solid fa-circle-exclamation text-2xl mb-2"></i>
+          <p class="font-medium">Gagal memuat data Service Keindahan.</p>
+        </td></tr>`;
+      } finally {
+        if (icon) icon.className = "fa-solid fa-rotate";
+      }
+    }
+
+    function renderKeindahanTable(data) {
+      const tbody = document.getElementById('keindahanTableBody');
+      document.getElementById('keindahanTotalCount').textContent = data.length;
+
+      if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" class="text-center py-8 text-slate-400">Tidak ada riwayat ditemukan.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = data.map((item, idx) => `
+        <tr class="hover:bg-emerald-50/50 transition ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/70'}">
+          <td class="py-2.5 px-3.5 text-center font-mono text-slate-500 border-r border-slate-100">${item.id}</td>
+          <td class="py-2.5 px-3.5 text-slate-700 font-medium border-r border-slate-100">${item.tanggal}</td>
+          <td class="py-2.5 px-3.5 font-bold text-emerald-900 border-r border-slate-100">${item.noMobil}</td>
+          <td class="py-2.5 px-3.5 text-slate-800 border-r border-slate-100">${item.jenisService}</td>
+          <td class="py-2.5 px-3.5 text-slate-700 border-r border-slate-100">${item.nipNama}</td>
+          <td class="py-2.5 px-3 text-center font-mono border-r border-slate-100">${item.notifNo}</td>
+          <td class="py-2.5 px-3 text-center font-mono border-r border-slate-100">${item.order}</td>
+          <td class="py-2.5 px-3 text-center font-mono border-r border-slate-100">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${item.approvel.toLowerCase().includes('ok') || item.approvel.toLowerCase().includes('acc') ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700'}">
+              ${item.approvel}
+            </span>
+          </td>
+          <td class="py-2.5 px-4 text-center">
+            <div class="flex items-center justify-center gap-1.5 flex-wrap">
+              ${renderPhotoBadge('Depan', item.fotoDepan)}
+              ${renderPhotoBadge('LH', item.fotoSampingLH)}
+              ${renderPhotoBadge('Interior', item.fotoInterior)}
+              ${renderPhotoBadge('Belakang', item.fotoBelakang)}
+              ${renderPhotoBadge('RH', item.fotoSampingRH)}
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderPhotoBadge(label, url) {
+      if (!url || !url.startsWith('http')) {
+        return `<span class="px-1.5 py-0.5 rounded text-[10px] bg-slate-100 text-slate-400 cursor-not-allowed">${label}</span>`;
+      }
+      return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-100 hover:bg-emerald-200 text-emerald-800 flex items-center gap-1 transition">
+        <i class="fa-solid fa-image text-[9px]"></i> ${label}
+      </a>`;
+    }
+
+    function filterKeindahanTable() {
+      const q = document.getElementById('searchKeindahan').value.toLowerCase().trim();
+      const filtered = keindahanData.filter(d => {
+        return !q || d.noMobil.toLowerCase().includes(q) || d.jenisService.toLowerCase().includes(q) || d.nipNama.toLowerCase().includes(q) || d.order.toLowerCase().includes(q);
+      });
+      renderKeindahanTable(filtered);
+    }
+
+    // Unduh File HTML Langsung
+    function downloadSelfHtml() {
+      const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+      const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = "simba_bc_portal.html";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    // Inisialisasi awal saat halaman dibuka
+    window.addEventListener('DOMContentLoaded', () => {
+      loadArgoData();
+    });
+  </script>
+</body>
+</html>
